@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Employee Directory";
+}
+
+<style>
+    .directory-wrap {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        border-radius: 16px;
+        background: linear-gradient(145deg, #f7fafc, #edf2f7);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+    }
+
+    .directory-title {
+        margin-bottom: 1rem;
+        font-weight: 700;
+        color: #1a365d;
+    }
+
+    .employee-table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #ffffff;
+    }
+
+    .employee-table th {
+        text-align: left;
+        background: #1e3a8a;
+        color: #ffffff;
+        padding: 0.85rem;
+        font-size: 0.95rem;
+    }
+
+    .employee-table td {
+        padding: 0.75rem 0.85rem;
+        border-bottom: 1px solid #e2e8f0;
+        color: #1f2937;
+    }
+
+    .employee-table tbody tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    .employee-table tbody tr:hover {
+        background: #e0f2fe;
+    }
+
+    .hint {
+        margin-bottom: 1rem;
+        color: #4a5568;
+    }
+</style>
+
+<div class="directory-wrap">
+    <h1 class="directory-title">@ViewData["Title"]</h1>
+    <p class="hint">Showing 10 sample employees loaded from <strong>sampledata.json</strong>.</p>
+
+    <table class="employee-table" aria-label="Employee Directory">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Hiring Date</th>
+                <th>Department</th>
+                <th>Job Title</th>
+            </tr>
+        </thead>
+        <tbody id="employees-body"></tbody>
+    </table>
+</div>
+
+<script>
+    async function loadEmployees() {
+        const body = document.getElementById('employees-body');
+
+        try {
+            const response = await fetch('/data/sampledata.json');
+            const employees = await response.json();
+
+            body.innerHTML = employees.map(employee => `
+                <tr>
+                    <td>${employee.FirstName}</td>
+                    <td>${employee.LastName}</td>
+                    <td>${employee.HiringDate}</td>
+                    <td>${employee.Department}</td>
+                    <td>${employee['Job Title']}</td>
+                </tr>
+            `).join('');
+        } catch {
+            body.innerHTML = '<tr><td colspan="5">Unable to load employee sample data.</td></tr>';
+        }
+    }
+
+    loadEmployees();
+</script>

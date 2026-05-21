@@ -1,98 +1,57 @@
-﻿@{
+﻿@model IReadOnlyList<fictional_journey.Models.EmployeeRecord>
+
+@{
     ViewData["Title"] = "Employee Directory";
 }
 
-<style>
-    .directory-wrap {
-        max-width: 1000px;
-        margin: 2rem auto;
-        padding: 1.5rem;
-        border-radius: 16px;
-        background: linear-gradient(145deg, #f7fafc, #edf2f7);
-        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
-    }
+<section class="fluent-panel mt-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <h1 class="fluent-title m-0">
+            <i class="ms-Icon ms-Icon--People me-2" aria-hidden="true"></i>
+            Employee Directory
+        </h1>
+        <span class="fluent-chip">
+            <i class="ms-Icon ms-Icon--Group me-1" aria-hidden="true"></i>
+            @Model.Count Employees
+        </span>
+    </div>
 
-    .directory-title {
-        margin-bottom: 1rem;
-        font-weight: 700;
-        color: #1a365d;
-    }
+    <p class="fluent-subtitle">
+        Data is loaded server-side from <strong>wwwroot/data/sampledata.json</strong>.
+    </p>
 
-    .employee-table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow: hidden;
-        border-radius: 12px;
-        background: #ffffff;
-    }
-
-    .employee-table th {
-        text-align: left;
-        background: #1e3a8a;
-        color: #ffffff;
-        padding: 0.85rem;
-        font-size: 0.95rem;
-    }
-
-    .employee-table td {
-        padding: 0.75rem 0.85rem;
-        border-bottom: 1px solid #e2e8f0;
-        color: #1f2937;
-    }
-
-    .employee-table tbody tr:nth-child(even) {
-        background: #f8fafc;
-    }
-
-    .employee-table tbody tr:hover {
-        background: #e0f2fe;
-    }
-
-    .hint {
-        margin-bottom: 1rem;
-        color: #4a5568;
-    }
-</style>
-
-<div class="directory-wrap">
-    <h1 class="directory-title">@ViewData["Title"]</h1>
-    <p class="hint">Showing 10 sample employees loaded from <strong>sampledata.json</strong>.</p>
-
-    <table class="employee-table" aria-label="Employee Directory">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Hiring Date</th>
-                <th>Department</th>
-                <th>Job Title</th>
-            </tr>
-        </thead>
-        <tbody id="employees-body"></tbody>
-    </table>
-</div>
-
-<script>
-    async function loadEmployees() {
-        const body = document.getElementById('employees-body');
-
-        try {
-            const response = await fetch('/data/sampledata.json');
-            const employees = await response.json();
-
-            body.innerHTML = employees.map(employee => `
+    <div class="table-responsive">
+        <table class="fluent-table" aria-label="Employee table">
+            <thead>
                 <tr>
-                    <td>${employee.FirstName}</td>
-                    <td>${employee.LastName}</td>
-                    <td>${employee.HiringDate}</td>
-                    <td>${employee.Department}</td>
-                    <td>${employee['Job Title']}</td>
+                    <th><i class="ms-Icon ms-Icon--Contact me-1" aria-hidden="true"></i> First Name</th>
+                    <th>Last Name</th>
+                    <th><i class="ms-Icon ms-Icon--Calendar me-1" aria-hidden="true"></i> Hiring Date</th>
+                    <th><i class="ms-Icon ms-Icon--Org me-1" aria-hidden="true"></i> Department</th>
+                    <th><i class="ms-Icon ms-Icon--Work me-1" aria-hidden="true"></i> Job Title</th>
                 </tr>
-            `).join('');
-        } catch {
-            body.innerHTML = '<tr><td colspan="5">Unable to load employee sample data.</td></tr>';
-        }
-    }
-
-    loadEmployees();
-</script>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5">No employee records found.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var employee in Model)
+                    {
+                        <tr>
+                            <td>@employee.FirstName</td>
+                            <td>@employee.LastName</td>
+                            <td>@employee.HiringDate</td>
+                            <td>@employee.Department</td>
+                            <td>@employee.JobTitle</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
